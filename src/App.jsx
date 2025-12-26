@@ -705,7 +705,7 @@ function App() {
   const turnName = state.turn === 0 ? "Sud" : "Nord";
 
   return (
-    <div className="root" style={{ background: `radial-gradient(1100px 700px at 40% 0%, #4b3a26, ${WOOD.bg})` }}>
+    <div className="root">
       <style>{css}</style>
 
       <div className="wrap">
@@ -784,7 +784,7 @@ function App() {
               <div className="sideName">Nord</div>
               <div className="sideBadges">
                 {mode === "ai" && aiSide === 1 && <Badge tone="gold">IA</Badge>}
-                {state.turn === 1 && !term.done && <Badge tone="gold">À jouer</Badge>}
+                {state.turn === 1 && !term.done && <Badge tone="gold">Joueur</Badge>}
               </div>
             </div>
             <div className="cardsRow">
@@ -826,7 +826,7 @@ function App() {
               <div className="sideName">Sud</div>
               <div className="sideBadges">
                 {mode === "ai" && aiSide === 0 && <Badge tone="gold">IA</Badge>}
-                {state.turn === 0 && !term.done && <Badge tone="gold">À jouer</Badge>}
+                {state.turn === 0 && !term.done && <Badge tone="gold">Joueur</Badge>}
               </div>
             </div>
 
@@ -844,28 +844,15 @@ function App() {
               ))}
             </div>
 
-            <div className="panelBox">
-              <div className="hintTitle">Action</div>
-              <div className="hint">
-                <div>1) Clique une de tes cartes.</div>
-                <div>2) Clique une de tes pièces.</div>
-                <div>3) Clique une case surlignée pour jouer.</div>
-              </div>
-
-              <div className="passRow">
-                <button
-                  className="ghost"
-                  onClick={() => selectedCard && doPass(selectedCard)}
-                  disabled={!selectedCard || !canPass() || term.done || (mode === "ai" && state.turn === aiSide)}
-                  title={canPass() ? "Passer (seulement si aucun coup légal)" : "Tu as un coup légal"}
-                >
-                  Passer avec la carte sélectionnée
-                </button>
-              </div>
-
-              <div className="smallPrint">
-                Astuce: la carte que tu utilises glisse à l'adversaire (rotation 180°) via la carte neutre.
-              </div>
+            <div className="passRow">
+              <button
+                className="ghost"
+                onClick={() => selectedCard && doPass(selectedCard)}
+                disabled={!selectedCard || !canPass() || term.done || (mode === "ai" && state.turn === aiSide)}
+                title={canPass() ? "Passer (seulement si aucun coup légal)" : "Tu as un coup légal"}
+              >
+                Passer avec la carte sélectionnée
+              </button>
             </div>
           </div>
         </div>
@@ -876,11 +863,20 @@ function App() {
 
 const css = `
   *{box-sizing:border-box}
-  html, body, #root { height: 100%; }
-  .root { height: 100vh; overflow: hidden; }
+  html, body, #root { height: 100%; width: 100%; margin: 0; }
+  body { background: radial-gradient(1100px 700px at 40% 0%, #4b3a26, ${WOOD.bg}); }
+  .root {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    background: radial-gradient(1100px 700px at 40% 0%, #4b3a26, ${WOOD.bg});
+  }
 
   .wrap{
-    max-width:100%;
+    width: 100%;
+    max-width: 1200px;
     height: 100vh;
     margin:0 auto;
     padding:12px 12px 12px;
@@ -954,15 +950,20 @@ const css = `
     flex: 1;
     min-height: 0;
     display:grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(520px, 620px) minmax(280px, 1fr);
+    grid-template-columns: minmax(260px, 1fr) minmax(420px, 560px) minmax(260px, 1fr);
     gap:12px;
     align-items:stretch;
   }
 
-  @media (max-width:1100px){
+  @media (max-width:1200px){
     .root{overflow:auto}
     .wrap{height:auto}
-    .mainRow{grid-template-columns:1fr;}
+    .mainRow{
+      flex: 0 0 auto;
+      min-height: auto;
+      display:flex;
+      flex-direction:column;
+    }
     .hud{grid-template-columns:1fr}
     .hudRight{align-items:flex-start}
   }
@@ -973,9 +974,8 @@ const css = `
     border-radius:18px;
     padding:14px;
     box-shadow:0 18px 32px ${WOOD.shadow};
-    height: 100%;
-    min-height: 0;
-    overflow: auto;
+    height: auto;
+    overflow: visible;
   }
   .sideHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .sideName{font-weight:900;letter-spacing:0.3px}
@@ -983,8 +983,8 @@ const css = `
 
   .cardsRow{display:flex;gap:10px;flex-wrap:wrap}
 
-  .card{width:176px;background:linear-gradient(180deg, rgba(224,198,154,0.92), rgba(201,173,128,0.82));border:1px solid rgba(255,255,255,0.14);border-radius:16px;padding:10px;cursor:pointer;color:#2b2115;text-align:left}
-  .card.compact{width:160px}
+  .card{width:clamp(120px, 16vw, 176px);background:linear-gradient(180deg, rgba(224,198,154,0.92), rgba(201,173,128,0.82));border:1px solid rgba(255,255,255,0.14);border-radius:16px;padding:10px;cursor:pointer;color:#2b2115;text-align:left}
+  .card.compact{width:clamp(112px, 14vw, 160px)}
   .card:disabled{cursor:not-allowed}
   .cardHeader{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
   .cardName{font-weight:900}
@@ -998,7 +998,7 @@ const css = `
   /* Board scales with available height (no scroll on 1080p typical) */
   .board{
     margin: 0 auto;
-    width: min(620px, calc(100vh - 220px));
+    width: min(100%, 620px, calc(100vh - 220px));
     aspect-ratio: 1 / 1;
     display:grid;
     grid-template-columns:repeat(5, 1fr);
@@ -1007,6 +1007,21 @@ const css = `
     background:rgba(0,0,0,0.25);
     border-radius:18px;
     border:1px solid rgba(255,255,255,0.12);
+  }
+
+  @media (max-width:700px){
+    .wrap{padding:10px}
+    .hudTitle{font-size:26px}
+    .board{
+      width: min(100%, 480px, calc(100vh - 260px));
+    }
+  }
+
+  @media (max-width:480px){
+    .hudTitle{font-size:22px}
+    .board{
+      width: min(100%, 360px, calc(100vh - 260px));
+    }
   }
 
   .cell{aspect-ratio:1/1;border-radius:16px;border:1px solid rgba(255,255,255,0.14);background:radial-gradient(140% 140% at 50% 45%, rgba(232,213,182,0.1), rgba(0,0,0,0.16));cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center}
@@ -1027,13 +1042,9 @@ const css = `
     box-shadow:0 10px 18px ${WOOD.shadow}, inset 0 2px 4px rgba(255,255,255,0.12);
   }
 
-  .panelBox{margin-top:12px;padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,0.12);background:rgba(0,0,0,0.18)}
-  .hintTitle{font-weight:900;margin-bottom:8px}
-  .hint{display:flex;flex-direction:column;gap:6px;color:${WOOD.ink2};font-size:13px}
-  .passRow{margin-top:12px}
-  button.ghost{width:100%;background:rgba(255,255,255,0.06);color:${WOOD.ink};border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 12px;cursor:pointer}
+  .passRow{margin-top:12px;display:flex;justify-content:flex-start}
+  button.ghost{width:clamp(112px, 14vw, 160px);background:rgba(255,255,255,0.06);color:${WOOD.ink};border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:10px 12px;cursor:pointer}
   button.ghost:disabled{opacity:0.45;cursor:not-allowed}
-  .smallPrint{margin-top:10px;color:${WOOD.ink2};font-size:12px;line-height:1.35}
 `;
 
 export default App;
