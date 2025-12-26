@@ -461,7 +461,7 @@ function Piece({ p }) {
   const isP0 = p.owner === 0;
   const isM = p.type === "M";
   const palette = PIECE_COLORS[isP0 ? 0 : 1][isM ? "master" : "student"];
-  const size = isM ? "90%" : "64%";
+  const size = isM ? "94%" : "72%";
   return (
     <div
       className="piece"
@@ -1014,14 +1014,20 @@ const css = `
     .hudTitle{font-size:26px}
     .board{
       width: min(100%, 480px, calc(100vh - 260px));
+      gap:6px;
+      padding:6px;
     }
+    .piece{width: calc(var(--piece-size) + 6%);}
   }
 
   @media (max-width:480px){
     .hudTitle{font-size:22px}
     .board{
       width: min(100%, 360px, calc(100vh - 260px));
+      gap:5px;
+      padding:5px;
     }
+    .piece{width: calc(var(--piece-size) + 8%);}
   }
 
   .cell{aspect-ratio:1/1;border-radius:16px;border:1px solid rgba(255,255,255,0.14);background:radial-gradient(140% 140% at 50% 45%, rgba(232,213,182,0.1), rgba(0,0,0,0.16));cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center}
