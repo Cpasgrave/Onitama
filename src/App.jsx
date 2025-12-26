@@ -464,7 +464,7 @@ function Piece({ p }) {
   const size = isM ? "94%" : "72%";
   return (
     <div
-      className="piece"
+      className={`piece ${isM ? "master" : "student"}`}
       style={{
         "--piece-size": size,
         background: `linear-gradient(180deg, ${palette.highlight}, ${palette.base})`,
@@ -1017,7 +1017,8 @@ const css = `
       gap:6px;
       padding:6px;
     }
-    .piece{width: calc(var(--piece-size) + 6%);}
+    .piece.student{width: 72%;}
+    .piece.master{width: 100%;}
   }
 
   @media (max-width:480px){
@@ -1027,7 +1028,8 @@ const css = `
       gap:5px;
       padding:5px;
     }
-    .piece{width: calc(var(--piece-size) + 8%);}
+    .piece.student{width: 72%;}
+    .piece.master{width: 100%;}
   }
 
   .cell{aspect-ratio:1/1;border-radius:16px;border:1px solid rgba(255,255,255,0.14);background:radial-gradient(140% 140% at 50% 45%, rgba(232,213,182,0.1), rgba(0,0,0,0.16));cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center}
